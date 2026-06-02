@@ -56,7 +56,7 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                 <div>
                     <h2 class="text-2xl font-black text-slate-900 uppercase tracking-tighter">Operadores Cadastrados</h2>
-                    <p class="text-xs text-slate-400 font-medium">Visualize, audite e registre contas de acesso para cada setor</p>
+                    <p class="text-xs text-slate-400 font-medium">Visualize, registre e exclua as credenciais de acesso de cada setor</p>
                 </div>
                 <!-- Botão para Abrir Modal -->
                 <button onclick="openRegisterModal()" 
@@ -75,12 +75,12 @@
                             <th class="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Setor / Função</th>
                             <th class="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Data de Cadastro</th>
                             <th class="px-6 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                            <th class="px-6 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="operators-table-body" class="divide-y divide-slate-100 bg-white">
-                        <!-- Injetado via JS -->
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-slate-400 italic">Carregando operadores...</td>
+                            <td colspan="6" class="px-6 py-12 text-center text-slate-400 italic">Carregando operadores...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -88,16 +88,14 @@
         </div>
     </main>
 
-    <!-- MODAL DE CADASTRO (Oculto por padrão) -->
+    <!-- MODAL DE CADASTRO -->
     <div id="register-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
         <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-100 p-8 relative transform scale-95 transition-all duration-300">
             
-            <!-- Botão de Fechar Superior -->
             <button onclick="closeRegisterModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition text-xl">
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
-            <!-- Título do Modal -->
             <div class="text-center mb-6">
                 <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 text-lg shadow-inner">
                     <i class="fa-solid fa-user-plus"></i>
@@ -106,30 +104,25 @@
                 <p class="text-xs text-slate-400 font-medium mt-1">Crie as credenciais de acesso do colaborador</p>
             </div>
 
-            <!-- Formulário de Registro -->
             <form id="register-user-form" class="space-y-4">
-                <!-- Nome -->
                 <div>
                     <label for="reg-name" class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1.5">Nome do Colaborador</label>
                     <input type="text" id="reg-name" required placeholder="Ex: João Silva" 
                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 input-focus transition-all">
                 </div>
 
-                <!-- Email -->
                 <div>
                     <label for="reg-email" class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1.5">E-mail de Acesso</label>
                     <input type="email" id="reg-email" required placeholder="colaborador@turbosul.com.br" 
                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 input-focus transition-all">
                 </div>
 
-                <!-- Senha -->
                 <div>
                     <label for="reg-password" class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1.5">Senha Provisória</label>
                     <input type="password" id="reg-password" required minlength="6" placeholder="Mínimo 6 caracteres" 
                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 input-focus transition-all">
                 </div>
 
-                <!-- Setor -->
                 <div>
                     <label for="reg-sector" class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1.5">Setor de Atuação (Roteamento)</label>
                     <select id="reg-sector" required 
@@ -153,12 +146,27 @@
                     </select>
                 </div>
 
-                <!-- Ações do Modal -->
                 <div class="flex space-x-3 pt-4 border-t border-slate-100">
                     <button type="button" onclick="closeRegisterModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold py-3.5 rounded-xl uppercase text-xs tracking-wider transition">Cancelar</button>
                     <button type="submit" id="btn-submit-register" class="flex-[2] bg-blue-600 hover:bg-blue-700 text-white font-black py-3.5 rounded-xl uppercase text-xs tracking-wider shadow-lg transition">Salvar</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE DELEÇÃO (Confirmação Bonita) -->
+    <div id="delete-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[110] hidden items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl p-6 text-center border-t-8 border-red-500">
+            <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-inner">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-xl font-black text-slate-800 uppercase tracking-tighter mb-2">Excluir Operador?</h3>
+            <p id="delete-modal-msg" class="text-xs text-gray-500 font-medium leading-relaxed mb-6">Esta ação apagará permanentemente o acesso deste colaborador.</p>
+            
+            <div class="flex space-x-3">
+                <button type="button" onclick="closeDeleteModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold py-3 rounded-xl uppercase text-[10px] tracking-wider transition">Cancelar</button>
+                <button type="button" id="confirm-delete-btn" class="flex-[2] bg-red-600 hover:bg-red-700 text-white font-black py-3 rounded-xl uppercase text-[10px] tracking-widest shadow-lg shadow-red-100 transition">Excluir Conta</button>
+            </div>
         </div>
     </div>
 
@@ -204,6 +212,8 @@
             'QUADRO-PRODUCAO': 'Quadro de Produção'
         };
 
+        let operatorToDeleteId = null;
+
         // Modal Controls
         function openRegisterModal() {
             const modal = document.getElementById('register-modal');
@@ -216,6 +226,21 @@
             modal.classList.add('hidden');
             modal.classList.remove('flex');
             document.getElementById('register-user-form').reset();
+        }
+
+        function openDeleteModal(id, name) {
+            operatorToDeleteId = id;
+            document.getElementById('delete-modal-msg').innerHTML = `Tem certeza que deseja apagar permanentemente a conta de acesso de <b>${name}</b>?`;
+            const modal = document.getElementById('delete-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('delete-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            operatorToDeleteId = null;
         }
 
         function showToast(message, type = 'success') {
@@ -255,7 +280,7 @@
                 if (error) throw error;
 
                 if (!data || data.length === 0) {
-                    tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">Nenhum operador registrado no banco de dados.</td></tr>`;
+                    tableBody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-slate-400">Nenhum operador registrado no banco de dados.</td></tr>`;
                     return;
                 }
 
@@ -270,12 +295,17 @@
                             <td class="px-6 py-4"><span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">${labelSetor}</span></td>
                             <td class="px-6 py-4 text-slate-400 font-bold text-xs">${cleanDate}</td>
                             <td class="px-6 py-4 text-center"><span class="bg-green-100 text-green-700 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider">Ativo</span></td>
+                            <td class="px-6 py-4 text-center">
+                                <button onclick="openDeleteModal('${op.id}', '${op.name}')" class="text-red-500 hover:text-red-700 transition p-2">
+                                    <i class="fa-regular fa-trash-can text-base"></i>
+                                </button>
+                            </td>
                         </tr>`;
                 }).join('');
 
             } catch (err) {
                 console.error("Erro ao carregar lista de operadores:", err);
-                tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-500 font-bold">Falha ao ler operadores. Verifique a tabela "profiles" no Supabase.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-red-500 font-bold">Falha ao ler operadores. Verifique a tabela "profiles" no Supabase.</td></tr>`;
             }
         }
 
@@ -331,6 +361,34 @@
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = `Salvar`;
+            }
+        });
+
+        // --- EXCLUSÃO INTEGRADA DE OPERADORES (PROFILES + AUTH VIA TRIGGER) ---
+        document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
+            if (!operatorToDeleteId) return;
+
+            const btn = document.getElementById('confirm-delete-btn');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin mr-2"></i> Excluindo...`;
+
+            try {
+                // Deletar da tabela profiles aciona o trigger de banco que remove a autenticação nativa (auth.users) de forma 100% segura
+                const { error } = await supabaseClient
+                    .from('profiles')
+                    .delete()
+                    .eq('id', operatorToDeleteId);
+
+                if (error) throw error;
+
+                showToast('Operador excluído com sucesso!');
+                closeDeleteModal();
+                await loadOperators(); // Atualiza a tabela local
+            } catch (err) {
+                console.error("Erro ao deletar operador:", err);
+                showToast(err.message || 'Não foi possível excluir o colaborador.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'Excluir Conta';
             }
         });
 
