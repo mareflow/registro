@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Usuários | TurboSul</title>
+    <title>Controle de Operadores | TurboSul</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -17,20 +17,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
+        body { font-family: 'Inter', sans-serif; }
         .input-focus:focus {
             border-color: #2563EB;
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
             outline: none;
         }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen flex flex-col justify-between">
+<body class="bg-slate-100 min-h-screen flex flex-col justify-between">
 
     <!-- HEADER DE NAVEGAÇÃO -->
-    <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between shadow-sm">
+    <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between shadow-sm sticky top-0 z-40">
         <div class="flex items-center space-x-4">
             <img src="https://i.postimg.cc/Jh5Jvrc9/IMG-7901.png" alt="Logo TurboSul" class="h-10 w-10">
             <div>
@@ -38,104 +39,131 @@
                 <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Gestão Administrativa de Acessos</p>
             </div>
         </div>
-        <a href="https://mareflow.github.io/turbosul-login/" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition uppercase tracking-wider">
-            <i class="fa-solid fa-arrow-left-long mr-2"></i> Voltar para Login
-        </a>
+        <div class="flex items-center space-x-6">
+            <a href="https://mareflow.github.io/turbosul-login/" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition uppercase tracking-wider">
+                <i class="fa-solid fa-arrow-left-long mr-2"></i> Voltar para Login
+            </a>
+            <span class="text-slate-300">|</span>
+            <span class="text-xs text-slate-500 font-semibold">Administração</span>
+        </div>
     </header>
 
-    <!-- CONTAINER CENTRAL -->
-    <main class="flex-1 flex items-center justify-center p-6 my-10">
-        <div class="bg-white w-full max-w-lg rounded-3xl shadow-xl border border-slate-100 p-8">
-            
-            <!-- Título do Formulário -->
-            <div class="text-center mb-8">
-                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl shadow-inner">
-                    <i class="fa-solid fa-user-plus"></i>
+    <!-- CONTEÚDO PRINCIPAL (Tabela de Operadores) -->
+    <main class="max-w-6xl w-full mx-auto p-6 flex-grow flex flex-col justify-start">
+        
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-8 mt-6">
+            <!-- Cabeçalho da Tabela -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-900 uppercase tracking-tighter">Operadores Cadastrados</h2>
+                    <p class="text-xs text-slate-400 font-medium">Visualize, audite e registre contas de acesso para cada setor</p>
                 </div>
-                <h2 class="text-2xl font-black text-slate-900 uppercase tracking-tighter">Registrar Operador</h2>
-                <p class="text-xs text-slate-400 font-medium mt-1">Crie credenciais e selecione o setor do colaborador</p>
+                <!-- Botão para Abrir Modal -->
+                <button onclick="openRegisterModal()" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-black py-3 px-6 rounded-2xl text-xs uppercase tracking-widest shadow-lg shadow-blue-100 transition duration-150 flex items-center">
+                    <i class="fa-solid fa-user-plus mr-2 text-sm"></i> Registrar Operador
+                </button>
             </div>
 
-            <!-- Formulário de Registro -->
-            <form id="register-user-form" class="space-y-5">
-                
-                <!-- Nome Completo -->
-                <div>
-                    <label for="reg-name" class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-2">Nome do Colaborador</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
-                            <i class="fa-regular fa-user"></i>
-                        </span>
-                        <input type="text" id="reg-name" required placeholder="Ex: João Silva" 
-                               class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm font-semibold text-slate-800 input-focus transition-all">
-                    </div>
-                </div>
-
-                <!-- Email Corporativo -->
-                <div>
-                    <label for="reg-email" class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-2">E-mail de Acesso</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
-                            <i class="fa-regular fa-envelope"></i>
-                        </span>
-                        <input type="email" id="reg-email" required placeholder="colaborador@turbosul.com.br" 
-                               class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm font-semibold text-slate-800 input-focus transition-all">
-                    </div>
-                </div>
-
-                <!-- Senha de Acesso -->
-                <div>
-                    <label for="reg-password" class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-2">Senha Provisória</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
-                            <i class="fa-solid fa-lock"></i>
-                        </span>
-                        <input type="password" id="reg-password" required minlength="6" placeholder="Mínimo 6 caracteres" 
-                               class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm font-semibold text-slate-800 input-focus transition-all">
-                    </div>
-                </div>
-
-                <!-- Dropdown de Setores (Baseado na planilha oficial) -->
-                <div>
-                    <label for="reg-sector" class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-2">Setor de Atuação (Roteamento)</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
-                            <i class="fa-solid fa-network-wired"></i>
-                        </span>
-                        <select id="reg-sector" required 
-                                class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm font-bold text-slate-800 input-focus transition-all appearance-none cursor-pointer">
-                            <option value="" disabled selected>Selecione o setor...</option>
-                            <option value="PRE-VENDAS">Pré-Vendas</option>
-                            <option value="ANALISE-TECNICA">Análise Técnica</option>
-                            <option value="VENDAS">Vendas (Comercial)</option>
-                            <option value="TRIAGEM">Triagem de Produção</option>
-                            <option value="DESMONTAGEM">Desmontagem</option>
-                            <option value="RETIFICA">Retífica</option>
-                            <option value="SOLDA">Solda</option>
-                            <option value="METROLOGIA">Metrologia</option>
-                            <option value="BANCADA">Bancada (Reparos)</option>
-                            <option value="BALANCEAMENTO">Balanceamento</option>
-                            <option value="MONTAGEM">Montagem</option>
-                            <option value="CONTROLE-QUALIDADE">Controle de Qualidade</option>
-                            <option value="EXPEDICAO">Expedição / Logística</option>
-                            <option value="ADMINISTRADOR">Administrador (TI/Admin)</option>
-                            <option value="QUADRO-PRODUCAO">Quadro de Produção (Geral)</option>
-                        </select>
-                    </div>
-                    <p class="text-[9px] text-slate-400 mt-1.5 ml-1 font-medium">O operador será direcionado automaticamente para a URL de seu setor no ato do login.</p>
-                </div>
-
-                <!-- Botão Submit -->
-                <button type="submit" id="btn-submit-register" 
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-blue-100 transition duration-150 flex items-center justify-center">
-                    <i class="fa-solid fa-cloud-arrow-up mr-2"></i> Gravar e Registrar
-                </button>
-            </form>
+            <!-- Tabela de Registros -->
+            <div class="overflow-x-auto rounded-2xl border border-slate-100">
+                <table class="min-w-full divide-y divide-slate-100 text-sm">
+                    <thead class="bg-slate-50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Colaborador</th>
+                            <th class="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">E-mail</th>
+                            <th class="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Setor / Função</th>
+                            <th class="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Data de Cadastro</th>
+                            <th class="px-6 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="operators-table-body" class="divide-y divide-slate-100 bg-white">
+                        <!-- Injetado via JS -->
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center text-slate-400 italic">Carregando operadores...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </main>
 
-    <!-- NOTIFICAÇÕES (Toast Customizado) -->
-    <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 z-50 flex items-center space-x-3 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-xl border border-slate-800 text-xs font-black uppercase tracking-wider">
+    <!-- MODAL DE CADASTRO (Oculto por padrão) -->
+    <div id="register-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-100 p-8 relative transform scale-95 transition-all duration-300">
+            
+            <!-- Botão de Fechar Superior -->
+            <button onclick="closeRegisterModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Título do Modal -->
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 text-lg shadow-inner">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+                <h2 class="text-xl font-black text-slate-900 uppercase tracking-tighter">Registrar Operador</h2>
+                <p class="text-xs text-slate-400 font-medium mt-1">Crie as credenciais de acesso do colaborador</p>
+            </div>
+
+            <!-- Formulário de Registro -->
+            <form id="register-user-form" class="space-y-4">
+                <!-- Nome -->
+                <div>
+                    <label for="reg-name" class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1.5">Nome do Colaborador</label>
+                    <input type="text" id="reg-name" required placeholder="Ex: João Silva" 
+                           class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 input-focus transition-all">
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="reg-email" class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1.5">E-mail de Acesso</label>
+                    <input type="email" id="reg-email" required placeholder="colaborador@turbosul.com.br" 
+                           class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 input-focus transition-all">
+                </div>
+
+                <!-- Senha -->
+                <div>
+                    <label for="reg-password" class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1.5">Senha Provisória</label>
+                    <input type="password" id="reg-password" required minlength="6" placeholder="Mínimo 6 caracteres" 
+                           class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 input-focus transition-all">
+                </div>
+
+                <!-- Setor -->
+                <div>
+                    <label for="reg-sector" class="block text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1.5">Setor de Atuação (Roteamento)</label>
+                    <select id="reg-sector" required 
+                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-800 input-focus transition-all cursor-pointer">
+                        <option value="" disabled selected>Selecione o setor...</option>
+                        <option value="PRE-VENDAS">Pré-Vendas</option>
+                        <option value="ANALISE-TECNICA">Análise Técnica</option>
+                        <option value="VENDAS">Vendas (Comercial)</option>
+                        <option value="TRIAGEM">Triagem de Produção</option>
+                        <option value="DESMONTAGEM">Desmontagem</option>
+                        <option value="RETIFICA">Retífica</option>
+                        <option value="SOLDA">Solda</option>
+                        <option value="METROLOGIA">Metrologia</option>
+                        <option value="BANCADA">Bancada (Reparos)</option>
+                        <option value="BALANCEAMENTO">Balanceamento</option>
+                        <option value="MONTAGEM">Montagem</option>
+                        <option value="CONTROLE-QUALIDADE">Controle de Qualidade</option>
+                        <option value="EXPEDICAO">Expedição / Logística</option>
+                        <option value="ADMINISTRADOR">Administrador (TI/Admin)</option>
+                        <option value="QUADRO-PRODUCAO">Quadro de Produção (Geral)</option>
+                    </select>
+                </div>
+
+                <!-- Ações do Modal -->
+                <div class="flex space-x-3 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closeRegisterModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold py-3.5 rounded-xl uppercase text-xs tracking-wider transition">Cancelar</button>
+                    <button type="submit" id="btn-submit-register" class="flex-[2] bg-blue-600 hover:bg-blue-700 text-white font-black py-3.5 rounded-xl uppercase text-xs tracking-wider shadow-lg transition">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- NOTIFICAÇÕES (Toast) -->
+    <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 z-50 flex items-center space-x-3 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-xl border border-slate-850 text-xs font-black uppercase tracking-wider">
         <span id="toast-icon" class="text-lg"></span>
         <span id="toast-message">--</span>
     </div>
@@ -150,31 +178,45 @@
         </div>
     </footer>
 
-    <!-- SDK do Supabase -->
+    <!-- Supabase SDK e Lógica -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = 'https://zghaqlaqozsskfldgsfe.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpnaGFxbGFxb3pzc2tmbGRnc2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyMDY1MzQsImV4cCI6MjA4NDc4MjUzNH0.aC2DMOUNhS2uK6KGI5Sf2c2vGhrCKHMnRyZhL3WwSus';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // --- MAPA DE ROTAS OFICIAL (Para consulta e controle de login) ---
-        const ROLE_REDIRECTS = {
-            'PRE-VENDAS': 'https://mareflow.github.io/turbosul-prevendas/',
-            'ANALISE-TECNICA': 'https://mareflow.github.io/analise-tecnica/',
-            'VENDAS': 'https://mareflow.github.io/decisa-comercialvendas/',
-            'TRIAGEM': 'https://mareflow.github.io/triagem/',
-            'DESMONTAGEM': 'https://mareflow.github.io/desmontagem/',
-            'RETIFICA': 'https://mareflow.github.io/retifica/',
-            'SOLDA': 'https://mareflow.github.io/solda/',
-            'METROLOGIA': 'https://mareflow.github.io/metrologia/',
-            'BANCADA': 'https://mareflow.github.io/bancada/',
-            'BALANCEAMENTO': 'https://mareflow.github.io/balanceamento/',
-            'MONTAGEM': 'https://mareflow.github.io/montagem/',
-            'CONTROLE-QUALIDADE': 'https://mareflow.github.io/qualidade/',
-            'EXPEDICAO': 'https://mareflow.github.io/expedicao/',
-            'ADMINISTRADOR': 'https://mareflow.github.io/admin/',
-            'QUADRO-PRODUCAO': 'https://mareflow.github.io/quadrodeproducao/'
+        // Tradução de Roles para exibição bonita na tabela
+        const ROLE_LABELS = {
+            'PRE-VENDAS': 'Pré-Vendas',
+            'ANALISE-TECNICA': 'Análise Técnica',
+            'VENDAS': 'Vendas (Comercial)',
+            'TRIAGEM': 'Triagem de Produção',
+            'DESMONTAGEM': 'Desmontagem',
+            'RETIFICA': 'Retífica',
+            'SOLDA': 'Solda',
+            'METROLOGIA': 'Metrologia',
+            'BANCADA': 'Bancada (Reparos)',
+            'BALANCEAMENTO': 'Balanceamento',
+            'MONTAGEM': 'Montagem',
+            'CONTROLE-QUALIDADE': 'Controle de Qualidade',
+            'EXPEDICAO': 'Expedição',
+            'ADMINISTRADOR': 'Administrador',
+            'QUADRO-PRODUCAO': 'Quadro de Produção'
         };
+
+        // Modal Controls
+        function openRegisterModal() {
+            const modal = document.getElementById('register-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeRegisterModal() {
+            const modal = document.getElementById('register-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.getElementById('register-user-form').reset();
+        }
 
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
@@ -201,6 +243,43 @@
             }, 4000);
         }
 
+        // --- CARREGAR LISTA DE OPERADORES (PROFILES) ---
+        async function loadOperators() {
+            const tableBody = document.getElementById('operators-table-body');
+            try {
+                const { data, error } = await supabaseClient
+                    .from('profiles')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-slate-400">Nenhum operador registrado no banco de dados.</td></tr>`;
+                    return;
+                }
+
+                tableBody.innerHTML = data.map(op => {
+                    const cleanDate = new Date(op.created_at).toLocaleDateString('pt-BR');
+                    const labelSetor = ROLE_LABELS[op.role] || op.role;
+                    
+                    return `
+                        <tr class="hover:bg-slate-50/50 transition">
+                            <td class="px-6 py-4 font-bold text-slate-800">${op.name}</td>
+                            <td class="px-6 py-4 text-slate-500 font-medium">${op.email}</td>
+                            <td class="px-6 py-4"><span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">${labelSetor}</span></td>
+                            <td class="px-6 py-4 text-slate-400 font-bold text-xs">${cleanDate}</td>
+                            <td class="px-6 py-4 text-center"><span class="bg-green-100 text-green-700 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider">Ativo</span></td>
+                        </tr>`;
+                }).join('');
+
+            } catch (err) {
+                console.error("Erro ao carregar lista de operadores:", err);
+                tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-500 font-bold">Falha ao ler operadores. Verifique a tabela "profiles" no Supabase.</td></tr>`;
+            }
+        }
+
+        // --- SUBMISSÃO DE REGISTRO E GRAVAÇÃO EM PROFILES ---
         document.getElementById('register-user-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -211,11 +290,11 @@
             const btn = document.getElementById('btn-submit-register');
 
             btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin mr-2"></i> Salvando no Supabase...`;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin mr-2"></i> Gravando...`;
 
             try {
-                // Registro do usuário salvando setor (role) e nome diretamente nos metadados estruturados
-                const { data, error } = await supabaseClient.auth.signUp({
+                // 1. Cadastra na autenticação do Supabase (Auth)
+                const { data: authData, error: authError } = await supabaseClient.auth.signUp({
                     email: email,
                     password: password,
                     options: {
@@ -226,20 +305,39 @@
                     }
                 });
 
-                if (error) {
-                    showToast(error.message, 'error');
-                } else {
+                if (authError) throw authError;
+
+                if (authData && authData.user) {
+                    // 2. Registra na tabela de perfis para exibição pública na listagem
+                    const { error: profileError } = await supabaseClient
+                        .from('profiles')
+                        .insert({
+                            id: authData.user.id,
+                            name: fullName,
+                            email: email,
+                            role: sector
+                        });
+
+                    if (profileError) throw profileError;
+
                     showToast('Operador registrado com sucesso!');
-                    document.getElementById('register-user-form').reset();
+                    closeRegisterModal();
+                    await loadOperators(); // Recarrega a tabela de visualização
                 }
+
             } catch (err) {
                 console.error(err);
-                showToast('Falha de conexão com a autenticação do Supabase.', 'error');
+                showToast(err.message || 'Falha de conexão com o banco de dados.', 'error');
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up mr-2"></i> Gravar e Registrar`;
+                btn.innerHTML = `Salvar`;
             }
         });
+
+        // Inicialização
+        (async function init() {
+            await loadOperators();
+        })();
     </script>
 </body>
 </html>
